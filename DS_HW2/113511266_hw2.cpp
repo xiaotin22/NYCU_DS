@@ -315,10 +315,8 @@ void slist_test() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 1000000);
     
-    // 開始計時 - 只測量核心演算法操作
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    // Insert 200,000 unique random integers
+    // 測量 insert 操作時間
+    auto start_insert = std::chrono::high_resolution_clock::now();
     std::unordered_set<int> inserted;
     for (int i = 0; i < 200000; ++i) {
         int k;
@@ -328,32 +326,45 @@ void slist_test() {
         inserted.insert(k);
         slist.list_insert(k);
     }
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::microseconds>(end_insert - start_insert);
     
-    // Insert-or-delete 200,000 random integers
+    // 測量 insert_delete 操作時間
+    auto start_ins_del = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 200000; ++i) {
         int k = dis(gen);
         slist.list_ins_del(k);
     }
+    auto end_ins_del = std::chrono::high_resolution_clock::now();
+    auto ins_del_time = std::chrono::duration_cast<std::chrono::microseconds>(end_ins_del - start_ins_del);
     
-    // 結束核心操作計時
-    auto end_operations = std::chrono::high_resolution_clock::now();
-    
+    // 測量 walk 操作時間
     std::cout << "\nCalling list_walk():" << std::endl;
+    auto start_walk = std::chrono::high_resolution_clock::now();
     slist.list_walk();
+    auto end_walk = std::chrono::high_resolution_clock::now();
+    auto walk_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk - start_walk);
     
+    // 測量 reverse 操作時間
     std::cout << "\nCalling list_reverse()..." << std::endl;
+    auto start_reverse = std::chrono::high_resolution_clock::now();
     slist.list_reverse();
+    auto end_reverse = std::chrono::high_resolution_clock::now();
+    auto reverse_time = std::chrono::duration_cast<std::chrono::microseconds>(end_reverse - start_reverse);
     
     std::cout << "\nCalling list_walk() after reverse:" << std::endl;
+    auto start_walk2 = std::chrono::high_resolution_clock::now();
     slist.list_walk();
+    auto end_walk2 = std::chrono::high_resolution_clock::now();
+    auto walk2_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk2 - start_walk2);
     
-    // 計算並顯示時間
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_operations - start);
-    std::cout << "SingleList core operations time: " << duration.count() << " ms" << std::endl;
-    
-    // 顯示更精確的時間（微秒）
-    auto duration_micro = std::chrono::duration_cast<std::chrono::microseconds>(end_operations - start);
-    std::cout << "SingleList core operations time: " << duration_micro.count() << " microseconds" << std::endl;
+    // 顯示各個操作的時間
+    std::cout << "\n=== SingleList Performance Results ===" << std::endl;
+    std::cout << "Insert operations time: " << insert_time.count() << " us" << std::endl;
+    std::cout << "Insert-delete operations time: " << ins_del_time.count() << " us" << std::endl;
+    std::cout << "Walk operation time: " << walk_time.count() << " us" << std::endl;
+    std::cout << "Reverse operation time: " << reverse_time.count() << " us" << std::endl;
+    std::cout << "Walk after reverse time: " << walk2_time.count() << " us" << std::endl;
 }
 
 void xlist_test() {
@@ -364,10 +375,8 @@ void xlist_test() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 1000000);
     
-    // 開始計時 - 只測量核心演算法操作
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    // Insert 200,000 unique random integers
+    // 測量 insert 操作時間
+    auto start_insert = std::chrono::high_resolution_clock::now();
     std::unordered_set<int> inserted;
     for (int i = 0; i < 200000; ++i) {
         int k;
@@ -377,32 +386,45 @@ void xlist_test() {
         inserted.insert(k);
         xlist.list_insert(k);
     }
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::microseconds>(end_insert - start_insert);
     
-    // Insert-or-delete 200,000 random integers
+    // 測量 insert_delete 操作時間
+    auto start_ins_del = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 200000; ++i) {
         int k = dis(gen);
         xlist.list_ins_del(k);
     }
+    auto end_ins_del = std::chrono::high_resolution_clock::now();
+    auto ins_del_time = std::chrono::duration_cast<std::chrono::microseconds>(end_ins_del - start_ins_del);
     
-    // 結束核心操作計時
-    auto end_operations = std::chrono::high_resolution_clock::now();
-    
+    // 測量 walk 操作時間
     std::cout << "\nCalling list_walk():" << std::endl;
+    auto start_walk = std::chrono::high_resolution_clock::now();
     xlist.list_walk();
+    auto end_walk = std::chrono::high_resolution_clock::now();
+    auto walk_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk - start_walk);
     
+    // 測量 reverse 操作時間
     std::cout << "\nCalling list_reverse()..." << std::endl;
+    auto start_reverse = std::chrono::high_resolution_clock::now();
     xlist.list_reverse();
+    auto end_reverse = std::chrono::high_resolution_clock::now();
+    auto reverse_time = std::chrono::duration_cast<std::chrono::microseconds>(end_reverse - start_reverse);
     
     std::cout << "\nCalling list_walk() after reverse:" << std::endl;
+    auto start_walk2 = std::chrono::high_resolution_clock::now();
     xlist.list_walk();
+    auto end_walk2 = std::chrono::high_resolution_clock::now();
+    auto walk2_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk2 - start_walk2);
     
-    // 計算並顯示時間
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_operations - start);
-    std::cout << "XORList core operations time: " << duration.count() << " ms" << std::endl;
-    
-    // 顯示更精確的時間（微秒）
-    auto duration_micro = std::chrono::duration_cast<std::chrono::microseconds>(end_operations - start);
-    std::cout << "XORList core operations time: " << duration_micro.count() << " microseconds" << std::endl;
+    // 顯示各個操作的時間
+    std::cout << "\n=== XORList Performance Results ===" << std::endl;
+    std::cout << "Insert operations time: " << insert_time.count() << " us" << std::endl;
+    std::cout << "Insert-delete operations time: " << ins_del_time.count() << " us" << std::endl;
+    std::cout << "Walk operation time: " << walk_time.count() << " us" << std::endl;
+    std::cout << "Reverse operation time: " << reverse_time.count() << " us" << std::endl;
+    std::cout << "Walk after reverse time: " << walk2_time.count() << " us" << std::endl;
 }
 
 int main() {
