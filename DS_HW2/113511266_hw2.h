@@ -25,7 +25,8 @@ public:
     ~SingleList();
     
     void list_walk();
-    void list_insert(int k);
+    void list_prepend(Node* x);
+    void list_insert(Node* x, Node* y);
     void list_search(int k);
     void list_delete(Node* n);
     void list_ins_del(int k);
@@ -50,7 +51,8 @@ public:
     ~XORList();
     
     void list_walk();
-    void list_insert(int k);
+    void list_prepend(Node* x);
+    void list_insert(Node* x, Node* y);
     void list_search(int k);
     void list_delete(Node* n);
     void list_ins_del(int k);

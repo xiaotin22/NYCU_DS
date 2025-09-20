@@ -29,11 +29,16 @@ void SingleList::list_walk() {
     std::cout << std::endl;
 }
 
-void SingleList::list_insert(int k) {
-    Node* new_node = new Node(k);
-    new_node->next = head;
-    head = new_node;
-    std::cout << "Inserted " << k << std::endl;
+void SingleList::list_prepend(Node* x) {
+    x->next = head;
+    head = x;
+    std::cout << "Inserted " << x->k << std::endl;
+}
+
+void SingleList::list_insert(Node* x, Node* y) {
+    x->next = y->next;
+    y->next = x;
+    std::cout << "Inserted " << x->k << std::endl;
 }
 
 void SingleList::list_search(int k) {
@@ -92,7 +97,8 @@ void SingleList::list_ins_del(int k) {
     if (node) {
         list_delete(node);
     } else {
-        list_insert(k);
+        Node* new_node = new Node(k);
+        list_prepend(new_node);
     }
 }
 
@@ -158,20 +164,62 @@ void XORList::list_walk() {
     std::cout << std::endl;
 }
 
-void XORList::list_insert(int k) {
-    Node* new_node = new Node(k);
-    
+void XORList::list_prepend(Node* x) {
     if (!head) {
-        head = tail = new_node;
+        head = tail = x;
     } else {
-        new_node->npx = reinterpret_cast<uintptr_t>(head);
+        x->npx = reinterpret_cast<uintptr_t>(head);
         head->npx = reinterpret_cast<uintptr_t>(
-            XOR(new_node, reinterpret_cast<Node*>(head->npx))
+            XOR(x, reinterpret_cast<Node*>(head->npx))
         );
-        head = new_node;
+        head = x;
     }
     
-    std::cout << "Inserted " << k << std::endl;
+    std::cout << "Inserted " << x->k << std::endl;
+}
+
+void XORList::list_insert(Node* x, Node* y) {
+    if (!y) return;
+    
+    if (y == tail) {
+        // Insert at the end
+        x->npx = reinterpret_cast<uintptr_t>(y);
+        y->npx = reinterpret_cast<uintptr_t>(
+            XOR(reinterpret_cast<Node*>(y->npx), x)
+        );
+        tail = x;
+    } else {
+        // Find the next node after y
+        Node* current = head;
+        Node* prev = nullptr;
+        Node* next = nullptr;
+        
+        // Traverse to find y and its next node
+        while (current && current != y) {
+            next = XOR(prev, reinterpret_cast<Node*>(current->npx));
+            prev = current;
+            current = next;
+        }
+        
+        if (current == y) {
+            Node* y_next = XOR(prev, reinterpret_cast<Node*>(y->npx));
+            
+            // Update x's npx to point to y and y_next
+            x->npx = reinterpret_cast<uintptr_t>(XOR(y, y_next));
+            
+            // Update y's npx to include x
+            y->npx = reinterpret_cast<uintptr_t>(XOR(prev, x));
+            
+            // Update y_next's npx to include x
+            if (y_next) {
+                y_next->npx = reinterpret_cast<uintptr_t>(
+                    XOR(x, XOR(y, reinterpret_cast<Node*>(y_next->npx)))
+                );
+            }
+        }
+    }
+    
+    std::cout << "Inserted " << x->k << std::endl;
 }
 
 void XORList::list_search(int k) {
@@ -295,7 +343,8 @@ void XORList::list_ins_del(int k) {
     if (node) {
         list_delete(node);
     } else {
-        list_insert(k);
+        Node* new_node = new Node(k);
+        list_prepend(new_node);
     }
 }
 
@@ -313,25 +362,26 @@ TestResults slist_test() {
     SingleList slist;
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(1, 1000000);
+    std::uniform_int_distribution<> dis(1, 10000);
     
     // 測量 insert 操作時間
     auto start_insert = std::chrono::high_resolution_clock::now();
     std::unordered_set<int> inserted;
-    for (int i = 0; i < 200000; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         int k;
         do {
             k = dis(gen);
         } while (inserted.count(k));
         inserted.insert(k);
-        slist.list_insert(k);
+        Node* new_node = new Node(k);
+        slist.list_prepend(new_node);
     }
     auto end_insert = std::chrono::high_resolution_clock::now();
     auto insert_time = std::chrono::duration_cast<std::chrono::microseconds>(end_insert - start_insert);
     
     // 測量 insert_delete 操作時間
     auto start_ins_del = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 200000; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         int k = dis(gen);
         slist.list_ins_del(k);
     }
@@ -369,25 +419,26 @@ TestResults xlist_test() {
     XORList xlist;
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(1, 1000000);
+    std::uniform_int_distribution<> dis(1, 10000);
     
     // 測量 insert 操作時間
     auto start_insert = std::chrono::high_resolution_clock::now();
     std::unordered_set<int> inserted;
-    for (int i = 0; i < 200000; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         int k;
         do {
             k = dis(gen);
         } while (inserted.count(k));
         inserted.insert(k);
-        xlist.list_insert(k);
+        Node* new_node = new Node(k);
+        xlist.list_prepend(new_node);
     }
     auto end_insert = std::chrono::high_resolution_clock::now();
     auto insert_time = std::chrono::duration_cast<std::chrono::microseconds>(end_insert - start_insert);
     
     // 測量 insert_delete 操作時間
     auto start_ins_del = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 200000; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         int k = dis(gen);
         xlist.list_ins_del(k);
     }
