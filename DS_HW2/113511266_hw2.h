@@ -60,8 +60,17 @@ public:
     Node* find_node(int k);
 };
 
+// Test result structure
+struct TestResults {
+    long long insert_time;
+    long long ins_del_time;
+    long long walk_time;
+    long long reverse_time;
+    long long walk2_time;
+};
+
 // Test functions
-void slist_test();
-void xlist_test();
+TestResults slist_test();
+TestResults xlist_test();
 
 #endif // HW2_H

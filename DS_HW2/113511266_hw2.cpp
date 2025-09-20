@@ -307,7 +307,7 @@ void XORList::list_reverse() {
 }
 
 // Test Functions
-void slist_test() {
+TestResults slist_test() {
     std::cout << "=== SingleList Test ===" << std::endl;
     
     SingleList slist;
@@ -358,16 +358,12 @@ void slist_test() {
     auto end_walk2 = std::chrono::high_resolution_clock::now();
     auto walk2_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk2 - start_walk2);
     
-    // 顯示各個操作的時間
-    std::cout << "\n=== SingleList Performance Results ===" << std::endl;
-    std::cout << "Insert operations time: " << insert_time.count() << " us" << std::endl;
-    std::cout << "Insert-delete operations time: " << ins_del_time.count() << " us" << std::endl;
-    std::cout << "Walk operation time: " << walk_time.count() << " us" << std::endl;
-    std::cout << "Reverse operation time: " << reverse_time.count() << " us" << std::endl;
-    std::cout << "Walk after reverse time: " << walk2_time.count() << " us" << std::endl;
+    // 返回時間結果
+    return {insert_time.count(), ins_del_time.count(), walk_time.count(), 
+            reverse_time.count(), walk2_time.count()};
 }
 
-void xlist_test() {
+TestResults xlist_test() {
     std::cout << "\n=== XORList Test ===" << std::endl;
     
     XORList xlist;
@@ -418,17 +414,31 @@ void xlist_test() {
     auto end_walk2 = std::chrono::high_resolution_clock::now();
     auto walk2_time = std::chrono::duration_cast<std::chrono::microseconds>(end_walk2 - start_walk2);
     
-    // 顯示各個操作的時間
-    std::cout << "\n=== XORList Performance Results ===" << std::endl;
-    std::cout << "Insert operations time: " << insert_time.count() << " us" << std::endl;
-    std::cout << "Insert-delete operations time: " << ins_del_time.count() << " us" << std::endl;
-    std::cout << "Walk operation time: " << walk_time.count() << " us" << std::endl;
-    std::cout << "Reverse operation time: " << reverse_time.count() << " us" << std::endl;
-    std::cout << "Walk after reverse time: " << walk2_time.count() << " us" << std::endl;
+    // 返回時間結果
+    return {insert_time.count(), ins_del_time.count(), walk_time.count(), 
+            reverse_time.count(), walk2_time.count()};
 }
 
 int main() {
-    slist_test();
-    xlist_test();
+    TestResults slist_results = slist_test();
+    TestResults xlist_results = xlist_test();
+    
+    // 統一顯示所有時間結果
+    std::cout << "\n=== Performance Results Comparison ===" << std::endl;
+    
+    std::cout << "\n=== SingleList Performance Results ===" << std::endl;
+    std::cout << "Insert operations time: " << slist_results.insert_time << " μs" << std::endl;
+    std::cout << "Insert-delete operations time: " << slist_results.ins_del_time << " μs" << std::endl;
+    std::cout << "Walk operation time: " << slist_results.walk_time << " μs" << std::endl;
+    std::cout << "Reverse operation time: " << slist_results.reverse_time << " μs" << std::endl;
+    std::cout << "Walk after reverse time: " << slist_results.walk2_time << " μs" << std::endl;
+    
+    std::cout << "\n=== XORList Performance Results ===" << std::endl;
+    std::cout << "Insert operations time: " << xlist_results.insert_time << " μs" << std::endl;
+    std::cout << "Insert-delete operations time: " << xlist_results.ins_del_time << " μs" << std::endl;
+    std::cout << "Walk operation time: " << xlist_results.walk_time << " μs" << std::endl;
+    std::cout << "Reverse operation time: " << xlist_results.reverse_time << " μs" << std::endl;
+    std::cout << "Walk after reverse time: " << xlist_results.walk2_time << " μs" << std::endl;
+    
     return 0;
 }
