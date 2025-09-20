@@ -1,5 +1,4 @@
 # Data Structure Fall 2025 - HW2 Linked List 🔗
----
 ## Overview 📖
 這次作業主要是使用 C++ 實作了兩種不同的鏈結串列：SingleList 和 XORList。
 
