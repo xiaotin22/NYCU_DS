@@ -1,7 +1,7 @@
 # Data Structure Fall 2025 - HW2 Linked List 🔗
 ## Overview 📖
 這次作業主要是使用 C++ 實作了兩種不同的鏈結串列：SingleList 和 XORList。
-使用測資，2000筆資料，每個資料1~10000
+使用測資：2000筆資料，每個資料1~10000
 
 ## 檔案說明 📁
 - `113511266_hw2.h`: 標頭檔，包含類別宣告
